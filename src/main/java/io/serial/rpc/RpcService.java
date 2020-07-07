@@ -20,5 +20,5 @@ public @interface RpcService {
 
     Class<?> value(); // 接口名
 
-    String alias(); // 别名
+    String alias() default ""; // 别名
 }

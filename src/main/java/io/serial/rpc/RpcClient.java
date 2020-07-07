@@ -5,15 +5,21 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.serial.rpc.codec.RpcDecoder;
+import io.serial.rpc.codec.RpcEncoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 
 /**
  * @program: therpc
- * @description:
+ * @description: Rpc 客户端
  * @author: sawyer
  * @create: 2020-07-04 16:00
  **/
+
+// 弃用
+//@Component
 public class RpcClient extends SimpleChannelInboundHandler<RpcResponse> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RpcClient.class);
@@ -54,9 +60,9 @@ public class RpcClient extends SimpleChannelInboundHandler<RpcResponse> {
                         @Override
                         public void initChannel(SocketChannel channel) throws Exception {
                             channel.pipeline()
-                                    .addLast(new RpcEncoder(RpcRequest.class)) // 将 RPC 请求进行编码（为了发送请求）
-                                    .addLast(new RpcDecoder(RpcResponse.class)) // 将 RPC 响应进行解码（为了处理响应）
-                                    .addLast(RpcClient.this); // 使用 RpcClient 发送 RPC 请求
+                                    .addLast(new RpcEncoder())
+                                    .addLast(new RpcDecoder(RpcResponse.class))
+                                    .addLast(RpcClient.this);
                         }
                     });
 

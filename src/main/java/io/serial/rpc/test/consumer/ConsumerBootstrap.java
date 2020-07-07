@@ -1,6 +1,6 @@
-package io.serial.rpc.client;
+package io.serial.rpc.test.consumer;
 
-import io.serial.rpc.HelloService;
+import io.serial.rpc.service.HelloService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -10,10 +10,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author: sawyer
  * @create: 2020-07-05 21:21
  **/
-public class ClientBootstrap {
+public class ConsumerBootstrap {
     public static void main(String[] args) {
         ApplicationContext context = new ClassPathXmlApplicationContext("client.xml");
         HelloService service = context.getBean(HelloService.class);
-        System.out.println("service.hello(\"sawyer\") = " + service.hello("sawyer"));
+        System.out.println("hello:" + service.hello("sawyer"));
+        System.exit(0);
     }
 }

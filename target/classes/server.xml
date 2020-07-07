@@ -8,7 +8,7 @@
 		 http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
     <!-- 扫描 component -->
-    <context:component-scan base-package="io.serial.rpc.server"/>
+    <context:component-scan base-package="io.serial.rpc.test.provider"/>
 
     <context:property-placeholder location="classpath:server.properties"/>
 
@@ -18,7 +18,7 @@
     </bean>
 
     <!-- 配置 RPC 服务器 -->
-    <bean id="rpcServer" class="io.serial.rpc.RpcServer">
+    <bean id="rpcServer" class="io.serial.rpc.RpcProvider">
         <constructor-arg name="serverAddress" value="${server.address}"/>
         <constructor-arg name="serviceRegistry" ref="serviceRegistry"/>
     </bean>

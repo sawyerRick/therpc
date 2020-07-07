@@ -1,4 +1,4 @@
-package io.serial.rpc;
+package io.serial.rpc.config;
 
 /**
  * @program: therpc

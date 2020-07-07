@@ -1,5 +1,6 @@
 package io.serial.rpc;
 
+import io.serial.rpc.service.HelloService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,9 +23,10 @@ public class HelloServiceTest {
 
     @Test
     public void helloTest() {
-        String result = helloService.hello("World");
-        ApiResp apiResp = helloService.getResp("haha", 2);
-        System.out.println("result = " + result);
-        System.out.println("apiResp = " + apiResp);
+        long start = System.currentTimeMillis();
+        for (int i = 0; i < 1; i++) {
+            helloService.hello("hello:" + i);
+        }
+        System.out.println("time:" + (System.currentTimeMillis() - start));
     }
 }

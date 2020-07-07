@@ -8,7 +8,7 @@
 		 http://www.springframework.org/schema/context/spring-context-4.0.xsd">
 
     <!-- 扫描 component -->
-    <context:component-scan base-package="io.serial.rpc.client"/>
+    <context:component-scan base-package="io.serial.rpc.test.consumer"/>
     <!-- 引入 properties 配置 -->
     <context:property-placeholder location="classpath:client.properties"/>
 

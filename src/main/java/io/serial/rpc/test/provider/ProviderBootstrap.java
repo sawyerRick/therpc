@@ -1,4 +1,4 @@
-package io.serial.rpc.server;
+package io.serial.rpc.test.provider;
 
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -8,7 +8,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
  * @author: sawyer
  * @create: 2020-07-04 15:54
  **/
-public class RpcBootstrap {
+public class ProviderBootstrap {
 
     public static void main(String[] args) {
         new ClassPathXmlApplicationContext("server.xml");

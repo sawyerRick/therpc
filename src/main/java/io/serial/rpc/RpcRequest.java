@@ -1,5 +1,7 @@
 package io.serial.rpc;
 
+import java.util.Arrays;
+
 /**
  * @program: therpc
  * @description:
@@ -10,7 +12,7 @@ public class RpcRequest {
 
     private String requestId;
     private String className;
-    RpcInfo rpcInfo;
+    private String interfaceName;
     private String methodName;
     private Class<?>[] parameterTypes;
     private Object[] parameters;
@@ -57,11 +59,11 @@ public class RpcRequest {
         this.parameters = parameters;
     }
 
-    public RpcInfo getRpcInfo() {
-        return rpcInfo;
+    public String getInterfaceName() {
+        return interfaceName;
     }
 
-    public void setRpcInfo(RpcInfo rpcInfo) {
-        this.rpcInfo = rpcInfo;
+    public void setInterfaceName(String interfaceName) {
+        this.interfaceName = interfaceName;
     }
 }

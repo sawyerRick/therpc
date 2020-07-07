@@ -1,6 +1,5 @@
 package io.serial.rpc;
 
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import net.sf.cglib.reflect.FastClass;
@@ -16,35 +15,41 @@ import java.util.Map;
  * @author: sawyer
  * @create: 2020-07-04 15:57
  **/
-public class RpcHandler extends SimpleChannelInboundHandler<RpcRequest> {
+public class ProviderHandler extends SimpleChannelInboundHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RpcHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProviderHandler.class);
 
-    private final Map<RpcInfo, Object> handlerMap;
+    private final Map<String /* interfaceName */, Object /* serviceBean */> serviceMap;
 
-    public RpcHandler(Map<RpcInfo, Object> handlerMap) {
-        this.handlerMap = handlerMap;
+    public ProviderHandler(Map<String, Object> serviceMap) {
+        this.serviceMap = serviceMap;
     }
 
     @Override
-    public void channelRead0(final ChannelHandlerContext ctx, RpcRequest request) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+//        System.out.println("provider channel active:" + ctx.channel().localAddress());
+    }
+
+    @Override
+    public void channelRead0(final ChannelHandlerContext ctx, Object request) throws Exception {
+        RpcRequest req = (RpcRequest) request;
         RpcResponse response = new RpcResponse();
-        response.setRequestId(request.getRequestId());
+        response.setRequestId(req.getRequestId());
         try {
-            Object result = handle(request);
+            Object result = handle(req);
             response.setResult(result);
         } catch (Throwable t) {
             response.setError(t);
         }
-        // addListener，异步回调后，执行此方法。
-        // 响应数据后，关闭连接。
-        ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+        try {
+            ctx.writeAndFlush(response).sync();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private Object handle(RpcRequest request) throws Throwable {
-        Object serviceBean = handlerMap.get(request.getRpcInfo());
-        System.out.println("request.getRpcInfo() = " + request.getRpcInfo());
-        System.out.println("serviceBean = " + serviceBean);
+        Object serviceBean = serviceMap.get(request.getInterfaceName());
 
         if (serviceBean == null) {
             return null;

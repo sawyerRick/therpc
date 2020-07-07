@@ -1,4 +1,4 @@
-package io.serial.rpc;
+package io.serial.rpc.codec;
 
 import com.dyuproject.protostuff.LinkedBuffer;
 import com.dyuproject.protostuff.ProtostuffIOUtil;

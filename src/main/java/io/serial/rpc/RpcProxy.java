@@ -1,5 +1,7 @@
 package io.serial.rpc;
 
+import io.serial.rpc.conn.ConsumerConn;
+
 import java.lang.reflect.Proxy;
 import java.util.UUID;
 
@@ -28,35 +30,30 @@ public class RpcProxy {
                 interfaceClass.getClassLoader(),
                 new Class[]{interfaceClass},
                 (proxy, method, args) -> {
-                    RpcRequest request = new RpcRequest(); // 创建并初始化 RPC 请求
+                    RpcRequest request = new RpcRequest();
                     // TODO 添加服务别名
-                    RpcInfo info = new RpcInfo();
-                    info.setAlias("hello");
-                    info.setInterfaceName(interfaceClass.getName());
-                    request.setRpcInfo(info);
+                    request.setInterfaceName(interfaceClass.getName());
                     request.setRequestId(UUID.randomUUID().toString());
                     request.setClassName(method.getDeclaringClass().getName());
                     request.setMethodName(method.getName());
                     request.setParameterTypes(method.getParameterTypes());
                     request.setParameters(args);
-                    System.out.println("method.getName() = " + method.getName());
 
-                    // TODO 这部分重复实例化多次，需要修改
                     if (serviceDiscovery != null) {
-                        serverAddress = serviceDiscovery.discover(); // 发现服务
+                        serverAddress = serviceDiscovery.discover();
                     }
 
                     String[] array = serverAddress.split(":");
                     String host = array[0];
                     int port = Integer.parseInt(array[1]);
 
-                    RpcClient client = new RpcClient(host, port); // 初始化 RPC 客户端
-                    RpcResponse response = client.send(request); // 通过 RPC 客户端发送 RPC 请求并获取 RPC 响应
+                    ConsumerConn conn = ConsumerConnManager.getInstance().select();
+                    RpcResponse response = conn.send(request);
 
                     if (response.isError()) {
                         throw response.getError();
                     } else {
-                        return response.getResult(); // 返回值，
+                        return response.getResult();
                     }
                 }
         );

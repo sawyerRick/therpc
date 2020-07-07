@@ -7,6 +7,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.serial.rpc.codec.RpcDecoder;
+import io.serial.rpc.codec.RpcEncoder;
 import org.apache.commons.collections4.MapUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,35 +26,33 @@ import java.util.Map;
  * @author: sawyer
  * @create: 2020-07-04 15:55
  **/
-public class RpcServer implements ApplicationContextAware, InitializingBean {
+public class RpcProvider implements ApplicationContextAware, InitializingBean {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(RpcServer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RpcProvider.class);
 
     private String serverAddress;
     private ServiceRegistry serviceRegistry;
 
-    // rpc信息 - 服务实例
-    private final Map<RpcInfo, Object> handlerMap = new HashMap<>();
+    private final Map<String, Object> handlerMap = new HashMap<>();
 
-    public RpcServer(String serverAddress) {
+    public RpcProvider(String serverAddress) {
         this.serverAddress = serverAddress;
     }
 
-    public RpcServer(String serverAddress, ServiceRegistry serviceRegistry) {
+    public RpcProvider(String serverAddress, ServiceRegistry serviceRegistry) {
         this.serverAddress = serverAddress;
         this.serviceRegistry = serviceRegistry;
     }
 
     @Override
     public void setApplicationContext(ApplicationContext ctx) throws BeansException {
-        Map<String, Object> serviceBeanMap = ctx.getBeansWithAnnotation(RpcService.class); // 获取所有带有 RpcService 注解的 Spring Bean
+        // 获取所有带有 RpcService 注解的 Spring Bean
+        Map<String, Object> serviceBeanMap = ctx.getBeansWithAnnotation(RpcService.class);
         if (MapUtils.isNotEmpty(serviceBeanMap)) {
             for (Object serviceBean : serviceBeanMap.values()) {
                 Class<?> serviceClass = serviceBean.getClass();
                 String interfaceName = serviceClass.getAnnotation(RpcService.class).value().getName();
-                String alias = serviceClass.getAnnotation(RpcService.class).alias();
-                RpcInfo info = new RpcInfo(interfaceName, alias);
-                handlerMap.put(info, serviceBean);
+                handlerMap.put(interfaceName, serviceBean);
             }
         }
     }
@@ -68,9 +68,9 @@ public class RpcServer implements ApplicationContextAware, InitializingBean {
                         @Override
                         public void initChannel(SocketChannel channel) throws Exception {
                             channel.pipeline()
-                                    .addLast(new RpcDecoder(RpcRequest.class)) // 将 RPC 请求进行解码（为了处理请求）
-                                    .addLast(new RpcEncoder(RpcResponse.class)) // 将 RPC 响应进行编码（为了返回响应）
-                                    .addLast(new RpcHandler(handlerMap)); // 处理 RPC 请求
+                                    .addLast(new RpcDecoder(RpcRequest.class))
+                                    .addLast(new RpcEncoder())
+                                    .addLast(new ProviderHandler(handlerMap));
                         }
                     });
 
