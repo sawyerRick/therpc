@@ -2,6 +2,8 @@ package io.serial.rpc;
 
 import io.serial.rpc.conn.ConsumerConn;
 import io.serial.rpc.conn.ConsumerNettyConn;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,19 +36,31 @@ public class ConsumerConnManager {
     }
 
     private ConsumerConnManager() {
-        init();
+        initConn();
     }
 
-    private void init() {
-        String host = "127.0.0.1";
-        int port = 8888;
-        // 初始化连接数
-        int num = Runtime.getRuntime().availableProcessors() / 3;
-        for (int i = 0; i < num; i++) {
-            connList.add(new ConsumerNettyConn(host, port));
-        }
-        for (ConsumerConn c : connList) {
-            c.connect();
+    public void reconnect() {
+        connList.clear();
+        initConn();
+    }
+
+    private void initConn() {
+        try {
+            // TODO 使用 zk 发现服务
+            String host = "127.0.0.1";
+            int port = 8888;
+            // 初始化连接数
+            int num = Runtime.getRuntime().availableProcessors() / 3;
+            for (int i = 0; i < num; i++) {
+                connList.add(new ConsumerNettyConn(host, port));
+            }
+            for (ConsumerConn c : connList) {
+                c.connect();
+            }
+        } catch (Exception e) {
+            System.out.println("ConsumerConnManager ----> initConn:初始化连接失败");
+            e.printStackTrace();
+            connList.clear();
         }
     }
 

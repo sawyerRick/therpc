@@ -27,7 +27,6 @@ public class RpcProxyFactory {
     @SuppressWarnings("unchecked")
     public <T> T create(Class<T> interfaceClass) {
 
-
         return (T) Proxy.newProxyInstance(
                 interfaceClass.getClassLoader(),
                 new Class[]{interfaceClass},
@@ -44,10 +43,6 @@ public class RpcProxyFactory {
                     if (serviceDiscovery != null) {
                         serverAddress = serviceDiscovery.discover();
                     }
-
-                    String[] array = serverAddress.split(":");
-                    String host = array[0];
-                    int port = Integer.parseInt(array[1]);
 
                     ConsumerConn conn = ConsumerConnManager.getInstance().select();
                     RpcResponse response = conn.send(request);

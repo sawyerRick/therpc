@@ -30,7 +30,7 @@ public class StressTest {
             executor.execute(() -> {
                 while(counter.incrementAndGet() < 100000){
                     try {
-                        service.hello("h");
+                        System.out.println(service.hello("h"));
                     } catch (Exception e) {
                     }
                 }
