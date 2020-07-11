@@ -1,7 +1,7 @@
 package io.serial.rpc.test.consumer;
 
 import io.serial.rpc.config.RpcConsumerConfig;
-import io.serial.rpc.RpcProxy;
+import io.serial.rpc.RpcProxyFactory;
 import io.serial.rpc.service.HelloService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -17,10 +17,10 @@ import org.springframework.context.annotation.Configuration;
 public class RpcClientConfig extends RpcConsumerConfig {
 
     @Autowired
-    RpcProxy rpcProxy;
+    RpcProxyFactory rpcProxyFactory;
 
     @Bean
     HelloService helloService() {
-        return rpcProxy.create(HelloService.class);
+        return rpcProxyFactory.create(HelloService.class);
     }
 }

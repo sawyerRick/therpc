@@ -9,6 +9,4 @@ package io.serial.rpc.service;
 public interface HelloService {
 
     String hello(String name);
-
-    ApiResp getResp(String id, Integer num);
 }

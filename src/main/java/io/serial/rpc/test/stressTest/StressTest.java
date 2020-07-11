@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author: sawyer
  * @create: 2020-07-07 17:07
  **/
-public class Main {
+public class StressTest {
 
     final static AtomicInteger counter = new AtomicInteger(0);
 

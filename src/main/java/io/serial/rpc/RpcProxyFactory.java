@@ -7,31 +7,33 @@ import java.util.UUID;
 
 /**
  * @program: therpc
- * @description:
+ * @description: rpc 代理工厂，为消费者提供服务代理
  * @author: sawyer
  * @create: 2020-07-04 16:00
  **/
-public class RpcProxy {
+public class RpcProxyFactory {
 
     private String serverAddress;
     private ServiceDiscovery serviceDiscovery;
 
-    public RpcProxy(String serverAddress) {
+    public RpcProxyFactory(String serverAddress) {
         this.serverAddress = serverAddress;
     }
 
-    public RpcProxy(ServiceDiscovery serviceDiscovery) {
+    public RpcProxyFactory(ServiceDiscovery serviceDiscovery) {
         this.serviceDiscovery = serviceDiscovery;
     }
 
     @SuppressWarnings("unchecked")
     public <T> T create(Class<T> interfaceClass) {
+
+
         return (T) Proxy.newProxyInstance(
                 interfaceClass.getClassLoader(),
                 new Class[]{interfaceClass},
                 (proxy, method, args) -> {
                     RpcRequest request = new RpcRequest();
-                    // TODO 添加服务别名
+                    // TODO 添加服务别名 alias
                     request.setInterfaceName(interfaceClass.getName());
                     request.setRequestId(UUID.randomUUID().toString());
                     request.setClassName(method.getDeclaringClass().getName());
