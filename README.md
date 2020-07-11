@@ -8,7 +8,7 @@ RPC：Remote Procedure Call，远程服务调用。
 
 ### 图解
 
-![therpc](assets/therpc.png)
+![therpc](https://github.com/sawyerRick/therpc/blob/master/assets/therpc.png)
 
 
 
